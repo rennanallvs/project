@@ -1,14 +1,16 @@
 @charset "UTF-8";
   body{
     font-family: Arial, Helvetica, sans-serif;
-  
+    background-color: #cccccc;
 }
 .login-container {
     background-color: #ffffff;
     padding: 30´x;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0,0,0.0.1);
-    width: 300px    ;
+    width: 400px;
+    margin: auto;
+    text-align: center ;
 }
 .login-container h2 {
     margin-bottom: 20px;
@@ -44,4 +46,18 @@
 }
 .btn-login:hover {
     background-color: #0056b3;
+}
+button{
+    display: block;
+    margin: auto;
+}
+.div2 {
+    color:black;
+}
+#tela {
+    width: 400px;
+    height: 400px;
+    display: block;
+    margin: auto;
+    background-color: white;
 }
