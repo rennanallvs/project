@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Minha Loja | Achadinhos da Shein</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <div class="logo">minha<span>loja</span></div>
+  <button class="cart-btn" id="openCart">Sacola (<span id="count">0</span>)</button>
+</header>
+
+<section class="hero">
+  <h1>Achadinhos da Shein com preço de revenda</h1>
+  <p>Escolha as peças, monte sua sacola e finalize o pedido direto pelo WhatsApp.</p>
+  <a href="#produtos">Ver produtos</a>
+</section>
+
+<main class="wrap" id="produtos">
+  <h2>Produtos</h2>
+  <div class="chips" id="chips"></div>
+  <div class="grid" id="grid"></div>
+</main>
+
+<section class="info">
+  <div><h4>Pedido pelo WhatsApp</h4><p>Você envia a sacola e confirma pagamento e entrega com a gente.</p></div>
+  <div><h4>Prazo de entrega</h4><p>10 a 15 dias</p></div>
+  <div><h4>Trocas e dúvidas</h4><p>produto avariado pos entrega entra em contato segunda a sexta 8hr as 16hrs </p></div>
+</section>
+
+<footer>© 2026 Minha Loja. Produtos de terceiros, revenda independente.</footer>
+
+<div id="overlay"></div>
+<aside id="drawer" aria-label="Sacola de compras">
+  <div class="dh"><strong>Sua sacola</strong><button id="closeCart" aria-label="Fechar sacola">×</button></div>
+  <div id="items"></div>
+  <div class="df">
+    <div class="total"><span>Total</span><span id="total">R$ 25,00</span></div>
+    <button class="buy" id="buy" disabled>Finalizar pelo WhatsApp</button>
+  </div>
+</aside>
+
+<script>
+/* ====== CONFIGURE AQUI ====== */
+const WHATSAPP = "61994547677"; // seu número com DDI + DDD, só números
+const PRODUCTS = [
+  // img: cole o link da foto do produto (opcional). Sem img, aparece o emoji.
+  {id:1, nome:"Vestido floral midi",       cat:"Vestidos",   preco:89.90, de:129.90, emoji:"👗", cor:"#ffd6e4", img:""},
+  {id:2, nome:"Vestido preto básico",      cat:"Vestidos",   preco:74.90, de:99.90,  emoji:"👗", cor:"#d9d4ec", img:""},
+  {id:3, nome:"Blusa cropped canelada",    cat:"Blusas",     preco:34.90, de:49.90,  emoji:"👚", cor:"#ffe8c7", img:""},
+  {id:4, nome:"Camisa oversized listrada", cat:"Blusas",     preco:59.90, de:79.90,  emoji:"👕", cor:"#d4ecf7", img:""},
+  {id:5, nome:"Calça wide leg",            cat:"Calças",     preco:84.90, de:119.90, emoji:"👖", cor:"#dcefd9", img:""},
+  {id:6, nome:"Short jeans cintura alta",  cat:"Calças",     preco:54.90, de:69.90,  emoji:"🩳", cor:"#d4e0f7", img:""},
+  {id:7, nome:"Bolsa tiracolo mini",       cat:"Acessórios", preco:44.90, de:64.90,  emoji:"👜", cor:"#f7d4d4", img:""},
+  {id:8, nome:"Kit 3 colares dourados",    cat:"Acessórios", preco:24.90, de:39.90,  emoji:"📿", cor:"#fff1b8", img:""}
+];
+/* ============================ */
+
+const brl = n => n.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+const $ = id => document.getElementById(id);
+let cart = {}, filtro = "Todos";
+
+const cats = ["Todos", ...new Set(PRODUCTS.map(p => p.cat))];
+function chips(){
+  $("chips").innerHTML = cats.map(c =>
+    `<button class="chip ${c===filtro?"on":""}" data-c="${c}">${c}</button>`).join("");
+}
+function grid(){
+  const lista = PRODUCTS.filter(p => filtro==="Todos" || p.cat===filtro);
+  $("grid").innerHTML = lista.map(p => `
+    <article class="card">
+      <div class="thumb" style="background:${p.cor}">${p.img ? `<img src="${p.img}" alt="${p.nome}">` : p.emoji}</div>
+      <h3>${p.nome}</h3>
+      <div class="price"><b>${brl(p.preco)}</b><s>${brl(p.de)}</s></div>
+      <button class="add" data-id="${p.id}">Adicionar à sacola</button>
+    </article>`).join("");
+}
+function sacola(){
+  const ids = Object.keys(cart);
+  let total = 0, qtd = 0;
+  $("items").innerHTML = ids.length ? ids.map(id => {
+    const p = PRODUCTS.find(x => x.id==id), q = cart[id];
+    total += p.preco*q; qtd += q;
+    return `<div class="row"><strong>${p.nome}</strong><span>${brl(p.preco*q)}</span>
+      <div class="qty"><button data-m="${id}" aria-label="Diminuir">−</button><span>${q}</span><button data-p="${id}" aria-label="Aumentar">+</button></div></div>`;
+  }).join("") : `<p class="empty">Sua sacola está vazia. Adicione um produto para começar.</p>`;
+  $("total").textContent = brl(total);
+  $("count").textContent = qtd;
+  $("buy").disabled = !ids.length;
+}
+const toggle = open => document.body.classList.toggle("open", open);
+
+document.addEventListener("click", e => {
+  const t = e.target;
+  if (t.dataset.c) { filtro = t.dataset.c; chips(); grid(); }
+  if (t.classList.contains("add")) { cart[t.dataset.id] = (cart[t.dataset.id]||0)+1; sacola(); toggle(true); }
+  if (t.dataset.p) { cart[t.dataset.p]++; sacola(); }
+  if (t.dataset.m) { if(--cart[t.dataset.m] <= 0) delete cart[t.dataset.m]; sacola(); }
+});
+$("openCart").onclick = () => toggle(true);
+$("closeCart").onclick = $("overlay").onclick = () => toggle(false);
+$("buy").onclick = () => {
+  let total = 0;
+  const linhas = Object.keys(cart).map(id => {
+    const p = PRODUCTS.find(x => x.id==id); total += p.preco*cart[id];
+    return `• ${cart[id]}x ${p.nome} - ${brl(p.preco*cart[id])}`;
+  });
+  const msg = `Olá! Quero fazer este pedido:\n${linhas.join("\n")}\n\nTotal: ${brl(total)}`;
+  window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}`, "_blank");
+};
+
+chips(); grid(); sacola();
+</script>
+</body>
+</html>
