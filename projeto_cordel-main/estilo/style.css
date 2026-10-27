@@ -78,11 +78,11 @@ section.imagem{
     text-shadow: 1px 1px 0px black;
 }
 #img01{
-background-image: url(' ../imagens/WhatsApp 001.jpeg');
+background-image: url('../imagens/WhatsApp\ Image\ 2026-10-27\ at\ 01.14.06.jpeg');
 background-position: right center;
 }
 #img02{
-background-image: url('../imagens/WhatsApp\ Image\ 003.jpeg');
+background-image: url('../imagens/WhatsApp\ Image\ 2026-10-27\ at\ 01.14.30.jpeg');
 }
 footer {
     font-family: var(--fonte1);
