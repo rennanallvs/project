@@ -78,12 +78,16 @@ section.imagem{
     text-shadow: 1px 1px 0px black;
 }
 #img01{
-background-image: url('../imagens/WhatsApp\ Image\ 2026-10-27\ at\ 01.14.06.jpeg');
-background-position: center;
+    background-image: url('../imagens/WhatsApp\ Image\ 2026-10-27\ at\ 01.14.06.jpeg');
+    background-position: center;
+    min-width: 150px;
+    max-width: 600px;
+    height: auto;
+
 }
 #img02{
-background-image: url('../imagens/WhatsApp\ Image\ 2026-10-27\ at\ 01.14.30.jpeg');
-background-position: bottom center;
+    background-image: url('../imagens/WhatsApp\ Image\ 2026-10-27\ at\ 01.14.30.jpeg');
+    background-position: bottom center;
 }
 footer {
     font-family: var(--fonte1);
